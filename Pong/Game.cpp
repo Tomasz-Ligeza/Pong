@@ -4,13 +4,13 @@ Game::Game()
 {
 	initializeWindow();
 	initializeVariables();
-	initializeStates();
 	loadFont();
+	initializeStates();
 }
 
 void Game::initializeWindow()
 {
-	window = new RenderWindow(VideoMode(800, 600), "Window");
+	window = new RenderWindow(VideoMode(800, 600), "Ponger");
 	window->setFramerateLimit(60);
 	window->setVerticalSyncEnabled(false);
 }
@@ -19,21 +19,29 @@ void Game::initializeVariables()
 {
 	event = new Event();
 	font = new Font();
+	music = new Sound();
+	music->setVolume(50);
 }
 
 void Game::initializeStates()
 {
-	this->states.push(new MenuState(window, event, &states, font));
+	this->states.push(new MenuState(window, event, &states, music, font));
 }
 
 void Game::loadFont()
 {
-	//font->loadFromFile("fonts\\arial.ttf");
+	if (!font->loadFromFile("fonts/arial.ttf"))
+	{
+		std::cout << "load font error\n";
+	}
 }
 
 Game::~Game()
 {
 	delete this->window;
+	delete this->event;
+	delete this->font;
+	delete this->music;
 	while (!states.empty())
 	{
 		delete this->states.top();

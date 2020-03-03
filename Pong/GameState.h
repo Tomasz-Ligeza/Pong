@@ -16,13 +16,17 @@ private:
 	Ball ball;
 	Vector2f ballDirection;
 
+
+
 	void movePlayer();
 	void moveComputer();
 	void ballCollide();
 
+	void initializeMusic();
+	void resetMusic();
 
 public:
-	GameState(RenderWindow* window, Event* event, std::stack<State*>* states);
+	GameState(RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music);
 	virtual ~GameState();
 	void endState();
 	void pollEvents();

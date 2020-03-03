@@ -13,6 +13,7 @@ private:
 	RenderWindow* window;
 	Event* event;
 	Font* font;
+	Sound* music;
 
 	Clock clock;
 	float deltaTime;

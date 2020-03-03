@@ -16,12 +16,15 @@ private:
 	
 	//private functions
 	void initializeButtons();
-	void initializeBackground();
 	void startGameButtonOnClick();
 	void optionsButtonOnClick();
 
+	void initializeBackground();
+	void initializeMusic();
+	void resetMusic();
+
 public:
-	MenuState(RenderWindow* window, Event* event, std::stack<State*>* states, Font* font);
+	MenuState(RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music, Font* font);
 	virtual ~MenuState(); 
 	void endState();
 	void pollEvents();

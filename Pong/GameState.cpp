@@ -1,5 +1,6 @@
 #include "GameState.h"
 
+
 void GameState::movePlayer()
 {
 	if (Keyboard::isKeyPressed(Keyboard::W))
@@ -86,14 +87,41 @@ void GameState::ballCollide()
 	}
 }
 
-GameState::GameState(sf::RenderWindow* window, Event* event, std::stack<State*>* states) 
-	: State(window, event, states)
+void GameState::initializeMusic()
+{
+	if (!buffer.loadFromFile("sounds/drop.wav"))
+	{
+		std::cout << "couldnt load sound\n";
+		return;
+	}
+	music->setBuffer(buffer);
+	music->setLoop(false);
+	music->play();
+	if (!nextBuffer.loadFromFile("sounds/game_st.wav"))
+	{
+		std::cout << "couldnt load sound\n";
+	}
+}
+
+void GameState::resetMusic()
+{
+	if (music->getStatus() == SoundSource::Status::Stopped)
+	{
+		music->setBuffer(nextBuffer);
+		music->setLoop(true);
+		music->play();
+	}
+}
+
+GameState::GameState(sf::RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music)
+	: State(window, event, states, music)
 {
 	float speed = 10.f;
 	player = Bouncer({ 0.f, window->getSize().y / 2.f }, { 10.f, 150.f }, Color::White, speed);
 	computer = Bouncer({ window->getSize().x - 10.f, window->getSize().y / 2.f }, { 10.f, 150.f }, Color::Red, speed);
 	ball = Ball({ window->getSize().x / 2.f, window->getSize().y / 2.f }, 30.f, Color::Cyan, speed / 2.f);
 	ballDirection = { -1.f, 1.f };
+	initializeMusic();
 }
 
 GameState::~GameState()
@@ -110,10 +138,19 @@ void GameState::pollEvents()
 {
 	while (this->window->pollEvent(*event))
 	{
-		if (this->event->type == Event::KeyPressed)
+		switch (this->event->type)
+		{
+		case Event::Closed:
+		{
+			this->window->close();
+			break;
+		}
+		case Event::KeyPressed:
 		{
 			if (this->event->key.code == Keyboard::Escape)
 				this->quit = true;
+			break;
+		}
 		}
 	}
 }
@@ -121,6 +158,8 @@ void GameState::pollEvents()
 void GameState::update(const float& deltaTime)
 {
 	this->checkForQuit();
+	this->resetMusic();
+
 	movePlayer();
 	moveComputer();
 	ballCollide();
