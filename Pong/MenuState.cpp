@@ -33,7 +33,7 @@ void MenuState::startGameButtonOnClick()
 
 void MenuState::optionsButtonOnClick()
 {
-	(*states).push(new OptionsState(window, event, states, music));
+	(*states).push(new OptionsState(window, event, states, music, font));
 }
 
 void MenuState::initializeBackground()
@@ -108,7 +108,7 @@ void MenuState::pollEvents()
 		}
 		case Event::MouseButtonPressed:
 		{
-			for (auto btn : buttons)
+			for (auto &btn : buttons)
 			{
 				btn->isClicked(Mouse::getPosition(*window));
 			}

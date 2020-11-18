@@ -12,6 +12,9 @@
     <Filter Include="States">
       <UniqueIdentifier>{bc71c685-a06e-4f70-8199-34faeaba240f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI Components">
+      <UniqueIdentifier>{f25553f4-78ae-43ac-b116-4b5044630767}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -19,9 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
@@ -45,11 +45,14 @@
     <ClCompile Include="OptionsState.cpp">
       <Filter>States</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>GUI Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Slider.cpp">
+      <Filter>GUI Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -70,6 +73,12 @@
     </ClInclude>
     <ClInclude Include="OptionsState.h">
       <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>GUI Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Slider.h">
+      <Filter>GUI Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

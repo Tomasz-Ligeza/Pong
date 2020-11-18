@@ -20,6 +20,7 @@ void Game::initializeVariables()
 	event = new Event();
 	font = new Font();
 	music = new Sound();
+	//read volume value from  ini file and delete that
 	music->setVolume(50);
 }
 

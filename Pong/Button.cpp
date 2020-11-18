@@ -24,7 +24,10 @@ void Button::isClicked(Vector2i mousePos)
 {
 	if (rectangle.getGlobalBounds().contains((float)mousePos.x, (float)mousePos.y))
 	{
-		onClick();
+		if (onClick != nullptr)
+			onClick();
+		else
+			throw "ON_CLICK_FUNCTION_NOT_INITIALIZED";
 	}
 }
 
@@ -53,8 +56,8 @@ Button::Button(Vector2f position, Vector2f size,
 	this->text.setString(text);
 	this->text.setFont(*font);
 	this->text.setCharacterSize(18);
-	this->text.setPosition(	position.x + size.x / 2.f - this->text.getLocalBounds().width / 2.f,
-							position.y + size.y / 2.f - this->text.getGlobalBounds().height / 2.f - this->text.getCharacterSize() / 3.f );
+	this->text.setPosition(position.x + size.x / 2.f - this->text.getLocalBounds().width / 2.f,
+		position.y + size.y / 2.f - this->text.getGlobalBounds().height / 2.f - this->text.getCharacterSize() / 3.f);
 }
 
 Button::~Button()
