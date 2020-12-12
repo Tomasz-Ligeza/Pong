@@ -79,8 +79,5 @@
     <ClInclude Include="Slider.h">
       <Filter>GUI Components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\..\SFML\include\SFML\Graphics.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

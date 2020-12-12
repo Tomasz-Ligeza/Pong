@@ -1,77 +1,94 @@
 #include "GameState.h"
+#include <sstream>
+#include <iomanip>
+#include <charconv>
 
+void GameState::updateTimer(const float& deltaTime)
+{
+	if (isActive) {
+		timeElapsed += deltaTime;
+		std::ostringstream oss;
+		std::cout << std::setprecision(2) << deltaTime << "\n";
+		oss << "Time elapsed: " << std::fixed << std::setprecision(1) << timeElapsed << "s";
+		this->timeElapsedText->setString(oss.str());
+	}
+
+	//cpp17
+}
 
 void GameState::movePlayer()
 {
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
-		if (player.getPosition().y <= 0)
+		if (playersBouncer.getPosition().y <= 0)
 		{
-			player.setPosition({ player.getPosition().x, 0.f });
+			playersBouncer.setPosition({ playersBouncer.getPosition().x, 0.f });
 		}
 		else
-			player.move({ 0.f, -1.f });
+			playersBouncer.move({ 0.f, -1.f });
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::S))
 	{
-		if (player.getPosition().y + player.getSize().y >= window->getSize().y)
+		if (playersBouncer.getPosition().y + playersBouncer.getSize().y >= window->getSize().y)
 		{
-			player.setPosition({ player.getPosition().x, window->getSize().y - player.getSize().y });
+			playersBouncer.setPosition({ playersBouncer.getPosition().x, window->getSize().y - playersBouncer.getSize().y });
 		}
 		else
-			player.move({ 0.f, 1.f });
+			playersBouncer.move({ 0.f, 1.f });
 	}
 }
 
 void GameState::moveComputer()
 {
-	if (computer.getPosition().y + 0.5f * computer.getSize().y < ball.getPosition().y)
+	if (computersBouncer.getPosition().y + 0.5f * computersBouncer.getSize().y < ball.getPosition().y)
 	{
-		if (computer.getPosition().y + computer.getSize().y >= window->getSize().y)
+		if (computersBouncer.getPosition().y + computersBouncer.getSize().y >= window->getSize().y)
 		{
-			computer.setPosition({ computer.getPosition().x, window->getSize().y - computer.getSize().y });
+			computersBouncer.setPosition({ computersBouncer.getPosition().x, window->getSize().y - computersBouncer.getSize().y });
 		}
 		
 		else
-			computer.move({ 0.f, 1.f });
+			computersBouncer.move({ 0.f, 1.f });
 	}
-	else if (computer.getPosition().y + 0.5f * computer.getSize().y > ball.getPosition().y)
+	else if (computersBouncer.getPosition().y + 0.5f * computersBouncer.getSize().y > ball.getPosition().y)
 	{
-		if (computer.getPosition().y <= 0)
+		if (computersBouncer.getPosition().y <= 0)
 		{
-			computer.setPosition({ computer.getPosition().x, 0.f });
+			computersBouncer.setPosition({ computersBouncer.getPosition().x, 0.f });
 		}
 		else
-			computer.move({ 0.f, -1.f });
+			computersBouncer.move({ 0.f, -1.f });
 	}
 }
 
 void GameState::ballCollide()
 {
 	//with bouncers collisions
-	if (ball.getPosition().x < player.getSize().x)
+	if (ball.getPosition().x < playersBouncer.getSize().x)
 	{
 		//collisions with player
-		if (ball.getPosition().y + ball.getRadius() > player.getPosition().y && ball.getPosition().y + ball.getRadius() < player.getPosition().y + player.getSize().y)
+		if (ball.getPosition().y + ball.getRadius() > playersBouncer.getPosition().y && ball.getPosition().y + ball.getRadius() < playersBouncer.getPosition().y + playersBouncer.getSize().y)
 		{
 			ballDirection = { -ballDirection.x , ballDirection.y };
 		}
 		else
 		{
 			//player lost
+			isActive = false;
 			ball.setSpeed(0.f);
 		}
 	}
-	else if (ball.getPosition().x + 2.f * ball.getRadius() > window->getSize().x - computer.getSize().x)
+	else if (ball.getPosition().x + 2.f * ball.getRadius() > window->getSize().x - computersBouncer.getSize().x)
 	{
 		//collisions with computer
-		if (ball.getPosition().y + ball.getRadius() > computer.getPosition().y && ball.getPosition().y + ball.getRadius() < computer.getPosition().y + computer.getSize().y)
+		if (ball.getPosition().y + ball.getRadius() > computersBouncer.getPosition().y && ball.getPosition().y + ball.getRadius() < computersBouncer.getPosition().y + computersBouncer.getSize().y)
 		{
 			ballDirection = { -ballDirection.x , ballDirection.y };
 		}
 		else
 		{
 			//computerLost
+			isActive = false;
 			ball.setSpeed(0.f);
 		}
 	}
@@ -103,6 +120,25 @@ void GameState::initializeMusic()
 	}
 }
 
+void GameState::initializeText()
+{
+	timeElapsedText = new Text();
+	this->timeElapsedText->setString("Time elapsed: 0.00s");
+	this->timeElapsedText->setFont(*font);
+	this->timeElapsedText->setCharacterSize(18);
+	this->timeElapsedText->setPosition(this->window->getSize().x / 6, this->window->getSize().y / 25);
+	drawables.push_back(timeElapsedText);
+}
+
+void GameState::initializeBouncersPosition()
+{
+	float speed = 10.f;
+	playersBouncer = Bouncer({ 0.f, window->getSize().y / 2.f }, { 10.f, 150.f }, Color::White, speed);
+	computersBouncer = Bouncer({ window->getSize().x - 10.f, window->getSize().y / 2.f }, { 10.f, 150.f }, Color::Red, speed);
+	ball = Ball({ window->getSize().x / 2.f, window->getSize().y / 2.f }, 30.f, Color::Cyan, speed / 2.f);
+	ballDirection = { -1.f, 1.f };
+}
+
 void GameState::resetMusic()
 {
 	if (music->getStatus() == SoundSource::Status::Stopped)
@@ -113,15 +149,14 @@ void GameState::resetMusic()
 	}
 }
 
-GameState::GameState(sf::RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music)
+GameState::GameState(sf::RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music, Font* font)
 	: State(window, event, states, music)
 {
-	float speed = 10.f;
-	player = Bouncer({ 0.f, window->getSize().y / 2.f }, { 10.f, 150.f }, Color::White, speed);
-	computer = Bouncer({ window->getSize().x - 10.f, window->getSize().y / 2.f }, { 10.f, 150.f }, Color::Red, speed);
-	ball = Ball({ window->getSize().x / 2.f, window->getSize().y / 2.f }, 30.f, Color::Cyan, speed / 2.f);
-	ballDirection = { -1.f, 1.f };
+	this->font = font;
+	timeElapsed = 0.0f;
 	initializeMusic();
+	initializeBouncersPosition();
+	initializeText();
 }
 
 GameState::~GameState()
@@ -160,6 +195,7 @@ void GameState::update(const float& deltaTime)
 	this->checkForQuit();
 	this->resetMusic();
 
+	updateTimer(deltaTime);
 	movePlayer();
 	moveComputer();
 	ballCollide();
@@ -168,7 +204,11 @@ void GameState::update(const float& deltaTime)
 
 void GameState::render(sf::RenderTarget* target)
 {
-	window->draw(player);
-	window->draw(computer);
+	window->draw(playersBouncer);
+	window->draw(computersBouncer);
 	window->draw(ball);
+
+	for (Drawable* x : drawables) {
+		window->draw(*x);
+	}
 }

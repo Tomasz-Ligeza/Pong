@@ -11,22 +11,31 @@ class GameState :
 {
 private:
 	//Variables
-	Bouncer player;
-	Bouncer computer;
+	Bouncer playersBouncer;
+	Bouncer computersBouncer;
 	Ball ball;
 	Vector2f ballDirection;
+	Font* font;
+	Text* timeElapsedText;
+	Text* score;
+	std::vector<Drawable*> drawables;
 
 
+	bool isActive = true;		///probably have to change it later
+	float timeElapsed;
 
+	void updateTimer(const float& deltaTime);
 	void movePlayer();
 	void moveComputer();
 	void ballCollide();
 
 	void initializeMusic();
+	void initializeText();
+	void initializeBouncersPosition();
 	void resetMusic();
 
 public:
-	GameState(RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music);
+	GameState(RenderWindow* window, Event* event, std::stack<State*>* states, Sound* music, Font* font);
 	virtual ~GameState();
 	void endState();
 	void pollEvents();

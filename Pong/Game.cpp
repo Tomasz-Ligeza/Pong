@@ -61,6 +61,7 @@ void Game::run()
 
 void Game::update()
 {
+	updateDeltaTime();
 	if (!this->states.empty())
 	{
 		//polling sfml events

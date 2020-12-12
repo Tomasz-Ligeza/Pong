@@ -28,7 +28,7 @@ void MenuState::initializeButtons()
 
 void MenuState::startGameButtonOnClick()
 {
-	(*states).push(new GameState(window, event, states, music));
+	(*states).push(new GameState(window, event, states, music, font));
 }
 
 void MenuState::optionsButtonOnClick()
