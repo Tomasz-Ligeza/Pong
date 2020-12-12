@@ -141,6 +141,7 @@
     <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\..\SFML\include\SFML\Graphics.hpp" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Bouncer.h" />
     <ClInclude Include="Button.h" />
