@@ -8,13 +8,12 @@ void GameState::updateTimer(const float& deltaTime)
 	if (isActive) {
 		timeElapsed += deltaTime;
 		std::ostringstream oss;
-		std::cout << std::setprecision(2) << deltaTime << "\n";
 		oss << "Time elapsed: " << std::fixed << std::setprecision(1) << timeElapsed << "s";
 		this->timeElapsedText->setString(oss.str());
 	}
-
-	//cpp17
 }
+
+/*
 
 void GameState::movePlayer()
 {
@@ -103,6 +102,19 @@ void GameState::ballCollide()
 		ballDirection = { ballDirection.x, -ballDirection.y };
 	}
 }
+*/
+
+void GameState::initializeBall()
+{
+	ball = new CircleShape();
+}
+
+void GameState::initializeBouncers()
+{
+	for (RectangleShape* bouncer : bouncers) {
+		bouncer = new RectangleShape();
+	}
+}
 
 void GameState::initializeMusic()
 {
@@ -122,13 +134,14 @@ void GameState::initializeMusic()
 
 void GameState::initializeText()
 {
-	timeElapsedText = new Text();
-	this->timeElapsedText->setString("Time elapsed: 0.00s");
+	this->timeElapsedText = new Text();
+	updateTimer(0.0f);
 	this->timeElapsedText->setFont(*font);
 	this->timeElapsedText->setCharacterSize(18);
 	this->timeElapsedText->setPosition(this->window->getSize().x / 6, this->window->getSize().y / 25);
-	drawables.push_back(timeElapsedText);
+	drawables.insert(timeElapsedText);
 }
+/*
 
 void GameState::initializeBouncersPosition()
 {
@@ -138,6 +151,8 @@ void GameState::initializeBouncersPosition()
 	ball = Ball({ window->getSize().x / 2.f, window->getSize().y / 2.f }, 30.f, Color::Cyan, speed / 2.f);
 	ballDirection = { -1.f, 1.f };
 }
+
+*/
 
 void GameState::resetMusic()
 {
@@ -154,8 +169,15 @@ GameState::GameState(sf::RenderWindow* window, Event* event, std::stack<State*>*
 {
 	this->font = font;
 	timeElapsed = 0.0f;
+	scoreString = "0 : 0";
+
+	
+
+	drawables.insert(ball);
+	drawables.insert(std::initializer_list<Drawable*> {*bouncers});
+
 	initializeMusic();
-	initializeBouncersPosition();
+	//initializeBouncersPosition();
 	initializeText();
 }
 
@@ -196,18 +218,18 @@ void GameState::update(const float& deltaTime)
 	this->resetMusic();
 
 	updateTimer(deltaTime);
-	movePlayer();
-	moveComputer();
-	ballCollide();
-	ball.move(ballDirection);
+	/*
+	updateBallPosition() {
+	
+	}
+	*/
+	//movePlayer();
+	//moveComputer();
+	//ballCollide();
 }
 
 void GameState::render(sf::RenderTarget* target)
 {
-	window->draw(playersBouncer);
-	window->draw(computersBouncer);
-	window->draw(ball);
-
 	for (Drawable* x : drawables) {
 		window->draw(*x);
 	}
